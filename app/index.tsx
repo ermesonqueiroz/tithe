@@ -1,7 +1,7 @@
 import { formatCurrency } from "@/utils";
 import { Link } from "expo-router";
 import { useState } from "react";
-import { View, TextInput, StyleSheet, TouchableOpacity, Text } from "react-native";
+import { View, TextInput, StyleSheet, TouchableOpacity, Text, Platform, KeyboardAvoidingView, Pressable, Keyboard } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
@@ -21,34 +21,48 @@ export default function HomeScreen() {
   };
 
   return (
-    <>
-      <View style={styles.rootContainer}>
-        <TextInput
-          style={styles.input}
-          keyboardType="numeric"
-          onChangeText={handleAmountChange}
-          value={formatCurrency(amount)}
-        />
-      </View>
-
-      <Link
-        asChild
-        href={{
-          pathname: '/checkout',
-          params: { amount }
-        }}
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      keyboardVerticalOffset={80}
+      behavior={
+        Platform.select({
+          ios: 'padding',
+          android: 'height'
+        })
+      }
+    >
+      <Pressable
+        style={{flex: 1 }}
+        onPress={() => Keyboard.dismiss()}
       >
-        <TouchableOpacity
-          activeOpacity={0.8}
-          style={{
-            ...styles.button,
-            bottom: insets.bottom + 20
-          }}
-        >
-          <Text style={styles.buttonText}>Continuar</Text>
-        </TouchableOpacity>
-      </Link>
-    </>
+        <>
+          <View style={styles.rootContainer}>
+            <TextInput
+              style={styles.input}
+              keyboardType="numeric"
+              onChangeText={handleAmountChange}
+              value={formatCurrency(amount)}
+            />
+          </View>
+
+          <Link
+            asChild
+            href={{
+              pathname: '/checkout',
+              params: { amount }
+            }}
+            style={{ marginBottom: insets.bottom }}
+          >
+            <TouchableOpacity
+              activeOpacity={0.8}
+              style={styles.button}
+            >
+              <Text style={styles.buttonText}>Continuar</Text>
+            </TouchableOpacity>
+          </Link>
+        </>
+      </Pressable>
+    </KeyboardAvoidingView>
   );
 }
 
