@@ -1,20 +1,20 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { DarkTheme, ThemeProvider } from '@react-navigation/native';
+import { Inter_400Regular, Inter_700Bold, useFonts } from '@expo-google-fonts/inter';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
+import { Stack } from 'expo-router';
+import Toast from 'react-native-toast-message';
 import 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { useColorScheme } from '@/hooks/useColorScheme';
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
+  const insets = useSafeAreaInsets();
   const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    Inter_400Regular,
+    Inter_700Bold
   });
 
   useEffect(() => {
@@ -28,12 +28,16 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={DarkTheme}>
       <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
+        <Stack.Screen name="index" options={{ title: 'Início' }} />
+        <Stack.Screen name="checkout" options={{ title: 'Checkout' }} />
+        <Stack.Screen name="first" options={{ title: 'Primícia' }} />
+        <Stack.Screen name="tithe" options={{ title: 'Dízimo' }} />
       </Stack>
+
       <StatusBar style="auto" />
+      <Toast topOffset={insets.top + 60} />
     </ThemeProvider>
   );
 }
